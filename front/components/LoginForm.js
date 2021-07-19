@@ -4,8 +4,9 @@ import Link from 'next/link';
 import styled from 'styled-components';
 //import PropTypes from 'prop-types';
 import useInput from '../hooks/useInput';
-import { useDispatch } from 'react-redux';
-import { loginAction } from '../reducers/user';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginRequestAction } from '../reducers/user';
+import useSelection from 'antd/lib/table/hooks/useSelection';
 
 //return 안에 객체 형태로 style 삽입하면 안됨   
 // {} === {} //결과: false 객체는 모양이 같더라도 같지 않음
@@ -20,7 +21,7 @@ const FormWrapper = styled(Form)`padding: 10px`; ``
 const LoginForm = () => { //setIsLoggedIn validation 아래 
     //redux- action dispatch 
     const dispatch = useDispatch();
-
+    const {isLoggingIn} = useSelector((state) => state.user);
 
     const [id, onChangeId] = useInput(''); //hooks 중복제거
     const [password, onChangePassword] = useInput('');
@@ -40,7 +41,7 @@ const LoginForm = () => { //setIsLoggedIn validation 아래
     const onSubmitForm = useCallback(() => { //dummy data로 로그인 처리
         console.log(id, password);
         //setIsLoggedIn(true);
-        dispatch(loginAction({ id, password })); //action dispatch
+        dispatch(loginRequestAction({ id, password })); //action dispatch
     }, [id, password]);
 
 
@@ -59,7 +60,7 @@ const LoginForm = () => { //setIsLoggedIn validation 아래
             </div>
             <ButtonWrapper>
                 {/* htmlType="submit" -> form의 onFinish가 자동 호출 submit 기능 */}
-                <Button type="primary" htmlType="submit" loading={false}>login</Button>
+                <Button type="primary" htmlType="submit" loading={isLoggingIn}>login</Button>
                 <Link href='/signup'><a><Button>sign up</Button></a></Link>
             </ButtonWrapper>
             <div>
